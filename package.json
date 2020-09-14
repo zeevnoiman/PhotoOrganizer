@@ -1,0 +1,23 @@
+{
+  "name": "photoorganizer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js", 
+  "bin": "./src/photoOrganizer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^2.14.0",
+    "dist-exiftool": "^10.53.0",
+    "mv": "^2.1.1",
+    "node-exiftool": "^2.3.0"
+  },
+  "pkg":{
+    "targets":[
+      "node10-win-x64"
+    ]
+  }
+}
