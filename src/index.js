@@ -8,21 +8,7 @@ const Listr = require('listr')
 
 const ep = new exiftool.ExiftoolProcess(exiftoolBin)
 
-const sortByMonth = process.argv[2];
-
-
-
-//moveFilesToCorrectDirectories(sortByMonth);
-
-async function moveFilesToCorrectDirectories(sortByMonth){
-    let files;
-    
-    if(sortByMonth){
-        files = await getCreationMonth();
-    }
-    else{
-        files = await getCreationYear();
-    }
+async function moveFilesToCorrectDirectories(ctx){
     
     files.map(file => {
         const dir = path.join('./', file.creationTarget);
@@ -36,7 +22,7 @@ async function moveFilesToCorrectDirectories(sortByMonth){
     });
 }
 
-async function getCreationMonth(){
+async function getCreationMonth(ctx){
     const files = await filterOnlyMediaFormats();
     console.log(files);
     
@@ -62,7 +48,7 @@ async function getCreationMonth(){
     return filesSerialized;
 }
 
-async function getCreationYear(){
+async function getCreationYear(ctx){
     const files = await filterOnlyMediaFormats();
     const filesSerialized = files.map(file => {
 
@@ -87,56 +73,53 @@ async function getCreationYear(){
 
 }
 
-async function filterOnlyMediaFormats(){
+async function filterOnlyMediaFormats(ctx){
     const files_data = await getFilesInfo()
     const filtered_files = files_data.filter(file => file.FileType == 'JPEG' || file.FileType == 'MP4' );
     return filtered_files;
 }
 
-async function getFilesInfo(){
-await ep.open();
-  // read directory
-const {data, error} = await ep.readMetadata('./', ['CreateDate', 'FileType', 'FileName', 'FileModifyDate']);
+async function getFilesInfo(ctx){
+    await ep.open();
+      // read directory
+    const {data, error} = await ep.readMetadata('./', ['CreateDate', 'FileType', 'FileName', 'FileModifyDate']);
 
-await ep.close()
+    await ep.close()
 
-return data;
+    return data;
 
 }
 
 
-export default function organizePhotos(){
-
-    
+export function organizePhotos(targetData){
     const tasks = new Listr([
         {
-          title: 'Copy project files',
-          task: () => copyTemplateFiles(options),
+          title: 'Get all files info',
+          task: ctx => getFilesInfo(ctx),
         },
         {
-          title: 'Initialize git',
-          task: () => initGit(options),
+          title: 'Filter only media formats',
+          task: ctx => filterOnlyMediaFormats(ctx),
+        },
+        {
+          title: 'Get creation year',
+          task: ctx => getCreationYear(ctx),
           enabled: () => options.git,
         },
         {
-          title: 'Install dependencies',
-          task: () =>
-            projectInstall({
-              cwd: options.targetDirectory,
-            }),
-          skip: () =>
-            !options.runInstall
-              ? 'Pass --install to automatically install dependencies'
-              : undefined,
+          title: 'Get creation month',
+          task: ctx => getCreationYear(ctx),
+          enabled: () => options.git,
+        },
+        {
+          title: 'Move files to correct folder',
+          task: (ctx) => initGit(ctx),
         },
     ]);
 
-
-  await tasks.run();
-  console.log('%s Project ready', chalk.green.bold('DONE'));
-  return true;
+    console.log(targetData);
+    // await tasks.run();
+    // console.log('%s Project ready', chalk.green.bold('DONE'));
+    return true;
 }
-
-
-
 

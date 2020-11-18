@@ -3,8 +3,7 @@ const clear = require('clear');
 const figlet = require('figlet');
 const inquirer = require('inquirer');
 
-
-
+const {organizePhotos} = require('./index.js');
 
 async function promptForPhotosFolder(options) {
     
@@ -12,7 +11,7 @@ async function promptForPhotosFolder(options) {
       questions.push({
         type: 'input',
         name: 'source_path',
-        message: 'Please write a complete path to folder to organize: ',
+        message: 'Please write a complete path of the folder to organize: ',
       });
     
       questions.push({
@@ -37,5 +36,5 @@ export async function cli(args) {
     );
     
     const answers = await promptForPhotosFolder()
-    console.log(answers);
+    organizePhotos(answers);
 }
