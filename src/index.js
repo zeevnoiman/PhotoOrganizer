@@ -4,12 +4,15 @@ const mv = require('mv');
 const date_fns = require('date-fns')
 const exiftool = require('node-exiftool')
 const exiftoolBin = require('dist-exiftool')
+const Listr = require('listr')
 
 const ep = new exiftool.ExiftoolProcess(exiftoolBin)
 
 const sortByMonth = process.argv[2];
 
-moveFilesToCorrectDirectories(sortByMonth);
+
+
+//moveFilesToCorrectDirectories(sortByMonth);
 
 async function moveFilesToCorrectDirectories(sortByMonth){
     let files;
@@ -102,7 +105,37 @@ return data;
 }
 
 
+export default function organizePhotos(){
 
+    
+    const tasks = new Listr([
+        {
+          title: 'Copy project files',
+          task: () => copyTemplateFiles(options),
+        },
+        {
+          title: 'Initialize git',
+          task: () => initGit(options),
+          enabled: () => options.git,
+        },
+        {
+          title: 'Install dependencies',
+          task: () =>
+            projectInstall({
+              cwd: options.targetDirectory,
+            }),
+          skip: () =>
+            !options.runInstall
+              ? 'Pass --install to automatically install dependencies'
+              : undefined,
+        },
+    ]);
+
+
+  await tasks.run();
+  console.log('%s Project ready', chalk.green.bold('DONE'));
+  return true;
+}
 
 
 

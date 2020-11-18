@@ -1,23 +1,41 @@
 {
-  "name": "photoorganizer",
+  "name": "photo-organizer",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js", 
-  "bin": "./src/photoOrganizer.js",
+  "description": "A CLI to organize your photos",
+  "main": "src/index.js",
+  "bin": {
+    "photo-organizer": "bin/photoOrganizer.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/photoOrganizer.js"
+    "start": "node bin/photoOrganizer.js"
   },
-  "author": "",
+  "keywords": [
+    "cli",
+    "photoOrganizer",
+    "photo-organizer"
+  ],
+  "author": "Zeev Noiman",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^4.1.0",
+    "clear": "^0.1.0",
+    "clui": "^0.3.6",
     "date-fns": "^2.14.0",
     "dist-exiftool": "^10.53.0",
+    "esm": "^3.2.25",
+    "figlet": "^1.5.0",
+    "inquirer": "^7.3.3",
+    "listr": "^0.14.3",
+    "minimist": "^1.2.5",
     "mv": "^2.1.1",
     "node-exiftool": "^2.3.0"
   },
-  "pkg":{
-    "targets":[
+  "pkg": {
+    "targets": [
       "node10-win-x64"
     ]
   }
