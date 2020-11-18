@@ -9,7 +9,7 @@ const Listr = require('listr')
 const ep = new exiftool.ExiftoolProcess(exiftoolBin)
 
 async function moveFilesToCorrectDirectories(ctx){
-    
+    const files = ctx.filesSerialized;
     files.map(file => {
         const dir = path.join('./', file.creationTarget);
 
@@ -23,7 +23,7 @@ async function moveFilesToCorrectDirectories(ctx){
 }
 
 async function getCreationMonth(ctx){
-    const files = await filterOnlyMediaFormats();
+    const files = ctx.filteredFiles;
     console.log(files);
     
     const filesSerialized = files.map(file => {
@@ -45,11 +45,11 @@ async function getCreationMonth(ctx){
         })
     })
 
-    return filesSerialized;
+    ctx.filesSerialized = filesSerialized;
 }
 
 async function getCreationYear(ctx){
-    const files = await filterOnlyMediaFormats();
+    const files = ctx.filteredFiles;
     const filesSerialized = files.map(file => {
 
         let creationDate;
@@ -68,15 +68,14 @@ async function getCreationYear(ctx){
         })
     })
 
-    return filesSerialized;
+    ctx.filesSerialized = filesSerialized;
     
-
 }
 
 async function filterOnlyMediaFormats(ctx){
-    const files_data = await getFilesInfo()
-    const filtered_files = files_data.filter(file => file.FileType == 'JPEG' || file.FileType == 'MP4' );
-    return filtered_files;
+    // const files_data = await getFilesInfo()
+    const filtered_files = ctx.filesData.filter(file => file.FileType == 'JPEG' || file.FileType == 'MP4' );
+    ctx.filteredFiled = filtered_files;
 }
 
 async function getFilesInfo(ctx){
@@ -86,7 +85,7 @@ async function getFilesInfo(ctx){
 
     await ep.close()
 
-    return data;
+    ctx.filesData = data;
 
 }
 
