@@ -3,13 +3,12 @@ const path = require('path');
 const mv = require('mv');
 const date_fns = require('date-fns')
 const exiftool = require('node-exiftool')
-const exiftoolBin = require('dist-exiftool')
-const Listr = require('listr')
+const exiftoolBin = require('dist-exiftool');
+var CLI = require('clui'),
 
 const ep = new exiftool.ExiftoolProcess(exiftoolBin)
 
-async function moveFilesToCorrectDirectories(ctx){
-    const files = ctx.filesSerialized;
+async function moveFilesToCorrectDirectories(files, source_path){
     files.map(file => {
         const dir = path.join('./', file.creationTarget);
 
@@ -17,7 +16,7 @@ async function moveFilesToCorrectDirectories(ctx){
             fs.mkdirSync(dir);
         }
 
-        mv(path.join('./', file.FileName),path.join('./', file.creationTarget, file.FileName), function(err) {
+        mv(path.join('./', file.FileName),path.join(source_path, file.creationTarget, file.FileName), function(err) {
           })  
     });
 }
@@ -48,8 +47,7 @@ async function getCreationMonth(ctx){
     ctx.filesSerialized = filesSerialized;
 }
 
-async function getCreationYear(ctx){
-    const files = ctx.filteredFiles;
+async function getCreationYear(files){
     const filesSerialized = files.map(file => {
 
         let creationDate;
@@ -68,55 +66,52 @@ async function getCreationYear(ctx){
         })
     })
 
-    ctx.filesSerialized = filesSerialized;
+    return filesSerialized;
     
 }
 
-async function filterOnlyMediaFormats(ctx){
+async function filterOnlyMediaFormats(filesData){
     // const files_data = await getFilesInfo()
-    const filtered_files = ctx.filesData.filter(file => file.FileType == 'JPEG' || file.FileType == 'MP4' );
-    ctx.filteredFiled = filtered_files;
+    const filtered_files = filesData.filter(file => file.FileType == 'JPEG' || file.FileType == 'MP4' );
+    return filtered_files;
 }
 
-async function getFilesInfo(ctx){
+async function getFilesInfo(source_path){
     await ep.open();
       // read directory
-    const {data, error} = await ep.readMetadata('./', ['CreateDate', 'FileType', 'FileName', 'FileModifyDate']);
+    const {data, error} = await ep.readMetadata(source_path, ['CreateDate', 'FileType', 'FileName', 'FileModifyDate']);
 
     await ep.close()
 
-    ctx.filesData = data;
+    return data;
 
 }
 
 
 export function organizePhotos(targetData){
-    const tasks = new Listr([
-        {
-          title: 'Get all files info',
-          task: ctx => getFilesInfo(ctx),
-        },
-        {
-          title: 'Filter only media formats',
-          task: ctx => filterOnlyMediaFormats(ctx),
-        },
-        {
-          title: 'Get creation year',
-          task: ctx => getCreationYear(ctx),
-          enabled: () => options.git,
-        },
-        {
-          title: 'Get creation month',
-          task: ctx => getCreationYear(ctx),
-          enabled: () => options.git,
-        },
-        {
-          title: 'Move files to correct folder',
-          task: (ctx) => initGit(ctx),
-        },
-    ]);
-
     console.log(targetData);
+    
+    Spinner = CLI.Spinner;
+    var spinner = new Spinner('Processing your photos...');
+    spinner.start();
+
+    getFilesInfo(targetData.source_path)
+    .then(data => {
+        return filterOnlyMediaFormats(data)
+    })
+    .then(filteredFiles => {
+        if(targetData.year_or_month == 'year'){
+            return getCreationYear(filteredFiles)
+        } else{
+            return getCreationMonth(filteredFiles)
+        }
+    })
+    .then(filesSerialized => {
+        return moveFilesToCorrectDirectories(filesSerialized, targetData.source_path)
+    })
+    .catch(err => console.log(err))
+    .finally(spinner.stop());
+
     // await tasks.run();
     // console.log('%s Project ready', chalk.green.bold('DONE'));
     return true;
