@@ -26,6 +26,7 @@ Press *enter* and wait until, magically, your folder will be organized by the cr
 - [X] Transform the script into a CLI.
 - [X] There will be no need to copy and paste all the path to the program. It will be possible to install it globally with npm.
 - [X] There will be no need to copy and paste all the path to source folder. Add navigation feature.
+- [ ] Errors handling and information messages.
 - [ ] Apply unit testing to all the program with **jest**
 
 ## Contributing
