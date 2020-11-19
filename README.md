@@ -29,4 +29,4 @@ Press *enter* and wait until, magically, your folder will be organized by the cr
 - [ ] Apply unit testing to all the program with **jest**
 
 ## Contributing
-If you think it is a good thing and want to help, great! Just open an issue and let's do great things! :smile:
+If you think this is a good thing and want to help, great! Just open an issue and let's do great things! :smile:
