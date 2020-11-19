@@ -4,25 +4,25 @@ const mv = require('mv');
 const date_fns = require('date-fns')
 const exiftool = require('node-exiftool')
 const exiftoolBin = require('dist-exiftool');
-var CLI = require('clui'),
+var CLI = require('clui');
 
 const ep = new exiftool.ExiftoolProcess(exiftoolBin)
 
 async function moveFilesToCorrectDirectories(files, source_path){
     files.map(file => {
-        const dir = path.join('./', file.creationTarget);
+        const dir = path.join(source_path, file.creationTarget);
 
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);
         }
 
-        mv(path.join('./', file.FileName),path.join(source_path, file.creationTarget, file.FileName), function(err) {
+        mv(path.join(source_path, file.FileName),path.join(source_path, file.creationTarget, file.FileName), function(err) {
           })  
     });
 }
 
-async function getCreationMonth(ctx){
-    const files = ctx.filteredFiles;
+async function getCreationMonth(files){
+
     console.log(files);
     
     const filesSerialized = files.map(file => {
@@ -44,7 +44,7 @@ async function getCreationMonth(ctx){
         })
     })
 
-    ctx.filesSerialized = filesSerialized;
+    return filesSerialized;
 }
 
 async function getCreationYear(files){
@@ -91,7 +91,7 @@ async function getFilesInfo(source_path){
 export function organizePhotos(targetData){
     console.log(targetData);
     
-    Spinner = CLI.Spinner;
+    const Spinner = CLI.Spinner;
     var spinner = new Spinner('Processing your photos...');
     spinner.start();
 
@@ -100,7 +100,7 @@ export function organizePhotos(targetData){
         return filterOnlyMediaFormats(data)
     })
     .then(filteredFiles => {
-        if(targetData.year_or_month == 'year'){
+        if(targetData.year_or_month == 'Year'){
             return getCreationYear(filteredFiles)
         } else{
             return getCreationMonth(filteredFiles)
