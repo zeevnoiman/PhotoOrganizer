@@ -1,5 +1,5 @@
 # PhotoOrganizer
-CLI to organize photos from a folder into distinct folders grouped by year and month. Developed with nodejs.
+CLI to organize photos from a folder into different folders grouped by year and month. Developed with nodejs.
 
 ## Installation
 You can download the source code and run on the cmd in the projects directory:
