@@ -12,12 +12,18 @@ npm install -g
 Open the cmd in your computer and digit the command `photo-organizer`. 
 You will see something like this:
 ![Choose a folder screen](/images/first-screen.png)
+You can navigate through your directory to pick the folder you want to organize.
+
+After that the program will ask you if you want to group by year or group by month.
+![Choose a group-by criteria](/images/second-screen.png)
+
+Press *enter* and wait until, magically, your folder will be organized by the criteria you chose. :clap::clap:
 
 
-## Future feature
+## Future feature :nerd_face:
 
-There will be no need to copy and paste all the path to the file. It will be possible to install it globally with npm.
+- [x] There will be no need to copy and paste all the path to the file. It will be possible to install it globally with npm.
+- [ ] Apply unit testing to all the program with **jest**
 
 ## Contributing
-
-Sending pull requests :smile:
+If you think it is a good thing and want to help, great! Just open an issue and let's do great things! :smile:
