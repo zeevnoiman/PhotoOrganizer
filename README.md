@@ -1,27 +1,18 @@
 # PhotoOrganizer
-Personal project to organize photos from one directory into distinct directories grouped by year and month. Developed with nodejs.
+CLI to organize photos from a folder into distinct folders grouped by year and month. Developed with nodejs.
 
 ## Installation
-You can download the source code and run on the cmd:
+You can download the source code and run on the cmd in the projects directory:
 ```
-npm install
+npm install -g
 ```
 
 ## Usage
 
-### Group by year
+Open the cmd in your computer and digit the command `photo-organizer`. 
+You will see something like this:
+![Choose a folder screen](/images/first-screen.png)
 
-**Copy** the **path** to the photoOrganizer.js file. Go to the directory where there are your photos and open the cmd on the location. 
-**Paste** the **path** to the photoOrganizer.js file and run the command `node <PASTE-HERE-THE-PATH>`.
-The photos will be grouped by year in different directories
-
-### Group by month
-
-Inside a directory of photos, **paste** the path to the photoOrganizer.js file and write *yes* in the end of the line.
-
-Example: `node <YOUR-PATH>\src\photoOrganizer.js yes`
-
-The photos will be grouped by month in different directories.
 
 ## Future feature
 
